@@ -22,11 +22,7 @@ const allowedIntegrations = [
   'instagram',
   'instagram-standalone',
   'linkedin-page',
-  'tiktok',
   'youtube',
-  'gmb',
-  'pinterest',
-  'threads',
   'x',
 ];
 export const PlatformAnalytics = () => {
@@ -81,12 +77,8 @@ export const PlatformAnalytics = () => {
         'instagram',
         'instagram-standalone',
         'linkedin-page',
-        'pinterest',
         'youtube',
-        'threads',
-        'gmb',
         'x',
-        'tiktok',
       ].indexOf(currentIntegration.identifier) !== -1
     ) {
       arr.push({
@@ -100,12 +92,8 @@ export const PlatformAnalytics = () => {
         'instagram',
         'instagram-standalone',
         'linkedin-page',
-        'pinterest',
         'youtube',
-        'threads',
-        'gmb',
         'x',
-        'tiktok',
       ].indexOf(currentIntegration.identifier) !== -1
     ) {
       arr.push({
@@ -114,7 +102,7 @@ export const PlatformAnalytics = () => {
       });
     }
     if (
-      ['facebook', 'linkedin-page', 'pinterest', 'youtube', 'x', 'gmb'].indexOf(
+      ['facebook', 'linkedin-page', 'youtube', 'x'].indexOf(
         currentIntegration.identifier
       ) !== -1
     ) {

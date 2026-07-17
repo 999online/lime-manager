@@ -46,7 +46,7 @@ const useFaqList = () => {
           isGeneral ? 'Lime Manager' : 'Lime Manager'
         } allows you to schedule your posts between different channels.
 A channel is a publishing platform where you can schedule your posts.
-For example, you can schedule your posts on X, Facebook, Instagram, TikTok, YouTube, Reddit, Linkedin, Dribbble, Threads and Pinterest.`
+For example, you can schedule your posts on X, Facebook, Instagram, YouTube, Reddit and Linkedin.`
       ),
     },
     {

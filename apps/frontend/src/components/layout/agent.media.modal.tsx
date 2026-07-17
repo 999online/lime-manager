@@ -65,7 +65,7 @@ export const AgentMediaModal: FC = () => {
             <span>
               {t(
                 'agent_media_feature_publish',
-                'Auto-publishing to TikTok, Instagram, YouTube and X'
+                'Auto-publishing to Instagram, YouTube and X'
               )}
             </span>
           </li>

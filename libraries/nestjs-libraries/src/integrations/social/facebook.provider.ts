@@ -15,7 +15,6 @@ import {
   FacebookDto,
   FACEBOOK_PRESET_MAX_CHARS,
 } from '@gitroom/nestjs-libraries/dtos/posts/providers-settings/facebook.dto';
-import { DribbbleDto } from '@gitroom/nestjs-libraries/dtos/posts/providers-settings/dribbble.dto';
 import { Integration } from '@prisma/client';
 import { hasExtension } from '@gitroom/helpers/utils/has.extension';
 import { timer } from '@gitroom/helpers/utils/timer';

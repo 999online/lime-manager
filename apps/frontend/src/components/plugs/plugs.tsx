@@ -105,8 +105,8 @@ export const Plugs = () => {
           )}
           <br />
           {t(
-            'you_have_to_add_x_linkedin_page_threads_or_bluesky',
-            'You have to add: X, LinkedIn Page, Threads or Bluesky'
+            'you_have_to_add_x_or_linkedin_page',
+            'You have to add: X or LinkedIn Page'
           )}
         </div>
         <Button onClick={() => router.push('/launches')}>

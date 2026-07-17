@@ -24,8 +24,6 @@ import { PlugDto } from '@gitroom/nestjs-libraries/dtos/plugs/plug.dto';
 import { RefreshToken } from '@gitroom/nestjs-libraries/integrations/social.abstract';
 
 import { timer } from '@gitroom/helpers/utils/timer';
-import { TelegramProvider } from '@gitroom/nestjs-libraries/integrations/social/telegram.provider';
-import { MoltbookProvider } from '@gitroom/nestjs-libraries/integrations/social/moltbook.provider';
 import {
   AuthorizationActions,
   Sections,
@@ -448,34 +446,4 @@ export class IntegrationsController {
     return this._integrationService.changePlugActivation(org.id, id, status);
   }
 
-  @Get('/telegram/updates')
-  async getUpdates(@Query() query: { word: string; id?: number }) {
-    return new TelegramProvider().getBotId(query);
-  }
-
-  @Post('/moltbook/register')
-  async moltbookRegister(@Body() body: { name: string; description: string }) {
-    try {
-      const provider = new MoltbookProvider();
-      const result = await provider.registerAgent(body.name, body.description);
-      return {
-        apiKey: result.api_key,
-        claimUrl: result.claim_url,
-        verificationCode: result.verification_code,
-      };
-    } catch (err: any) {
-      return { error: err.message || 'Registration failed' };
-    }
-  }
-
-  @Get('/moltbook/status')
-  async moltbookStatus(@Query('apiKey') apiKey: string) {
-    try {
-      const provider = new MoltbookProvider();
-      const result = await provider.checkAgentStatus(apiKey);
-      return { claimed: result?.status === 'claimed' };
-    } catch (err) {
-      return { claimed: false };
-    }
-  }
 }

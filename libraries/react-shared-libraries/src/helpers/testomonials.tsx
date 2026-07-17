@@ -129,8 +129,8 @@ export const testimonials2 = [
         Why did I choose Lime Manager? The ability to self-host it means significant
         savings for me! 💰 {'\n\n'}
         Lime Manager is an open-source scheduling tool that allows you to plan and
-        automate posts across 19+ platforms, including X, LinkedIn, BlueSky, and
-        Mastodon. {'\n\n'}
+        automate posts across platforms including X, LinkedIn, Facebook, Instagram,
+        YouTube, and Reddit. {'\n\n'}
         With its powerful editor, you can easily connect your accounts, create
         rich scheduled posts, and manage multiple channels all in one place.
         Plus, it supports image uploads, recurring posts, and timezone-aware

@@ -57,36 +57,10 @@ export const ContinueIntegration: FC<{
     [logged, push]
   );
   const modifiedParams = useMemo(() => {
-    if (provider === 'mewe') {
-      return {
-        state: searchParams.state || '',
-        code: searchParams.loginRequestToken || '',
-        refresh: searchParams.refresh || '',
-      };
-    }
     if (provider === 'x') {
       return {
         state: searchParams.oauth_token || '',
         code: searchParams.oauth_verifier || '',
-        refresh: searchParams.refresh || '',
-      };
-    }
-
-    if (provider === 'vk') {
-      return {
-        ...searchParams,
-        state: searchParams.state || '',
-        code: searchParams.code + '&&&&' + searchParams.device_id,
-      };
-    }
-
-    if (provider === 'mewe') {
-      const hash =
-        typeof window !== 'undefined' ? window.location.hash.substring(1) : '';
-      const hashParams = new URLSearchParams(hash);
-      return {
-        state: hashParams.get('state') || searchParams.state || '',
-        code: hashParams.get('loginRequestToken') || '',
         refresh: searchParams.refresh || '',
       };
     }
@@ -258,8 +232,6 @@ export const ContinueIntegration: FC<{
       instagram: 'Instagram',
       'linkedin-page': 'LinkedIn',
       youtube: 'YouTube',
-      gmb: 'Google Business',
-      tumblr: 'Tumblr',
     };
     return names[provider] || provider;
   }, [provider]);
