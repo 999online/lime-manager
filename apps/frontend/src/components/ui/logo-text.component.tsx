@@ -17,7 +17,7 @@ export const LogoTextComponent = () => {
       }}
     >
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <rect width="24" height="24" rx="6" fill="#612BD3" />
+        <rect width="24" height="24" rx="6" fill="#65a30d" />
         <text
           x="12"
           y="17"
