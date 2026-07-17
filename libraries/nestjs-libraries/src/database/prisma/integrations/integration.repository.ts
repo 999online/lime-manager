@@ -6,6 +6,11 @@ import { makeId } from '@gitroom/nestjs-libraries/services/make.is';
 import { IntegrationTimeDto } from '@gitroom/nestjs-libraries/dtos/integrations/integration.time.dto';
 import { UploadFactory } from '@gitroom/nestjs-libraries/upload/upload.factory';
 import { PlugDto } from '@gitroom/nestjs-libraries/dtos/plugs/plug.dto';
+import {
+  encryptIntegrationToken,
+  decryptIntegrationToken,
+  isEncryptedIntegrationToken,
+} from '@gitroom/helpers/auth/integration.token.crypto';
 
 @Injectable()
 export class IntegrationRepository {
@@ -18,6 +23,32 @@ export class IntegrationRepository {
     private _customers: PrismaRepository<'customer'>,
     private _mentions: PrismaRepository<'mentions'>
   ) {}
+
+  private encryptTokenFields<T extends { token?: string; refreshToken?: string }>(
+    data: T
+  ): T {
+    return {
+      ...data,
+      ...(data.token ? { token: encryptIntegrationToken(data.token) } : {}),
+      ...(data.refreshToken
+        ? { refreshToken: encryptIntegrationToken(data.refreshToken) }
+        : {}),
+    };
+  }
+
+  private decryptTokenFields<
+    T extends { token?: string | null; refreshToken?: string | null }
+  >(row: T): T {
+    return {
+      ...row,
+      ...(row.token && isEncryptedIntegrationToken(row.token)
+        ? { token: decryptIntegrationToken(row.token) }
+        : {}),
+      ...(row.refreshToken && isEncryptedIntegrationToken(row.refreshToken)
+        ? { refreshToken: decryptIntegrationToken(row.refreshToken) }
+        : {}),
+    };
+  }
 
   getMentions(platform: string, q: string) {
     return this._mentions.model.mentions.findMany({
@@ -143,6 +174,7 @@ export class IntegrationRepository {
   }
 
   async updateIntegration(id: string, params: Partial<Integration>) {
+    params = this.encryptTokenFields(params);
     if (
       params.picture &&
       (params.picture.indexOf(process.env.CLOUDFLARE_BUCKET_URL!) === -1 ||
@@ -240,6 +272,10 @@ export class IntegrationRepository {
           ]),
         }
       : {};
+    const encryptedToken = token ? encryptIntegrationToken(token) : token;
+    const encryptedRefreshToken = refreshToken
+      ? encryptIntegrationToken(refreshToken)
+      : refreshToken;
     const upsert = await this._integration.model.integration.upsert({
       where: {
         organizationId_internalId: {
@@ -251,11 +287,11 @@ export class IntegrationRepository {
         type: type as any,
         name,
         providerIdentifier: provider,
-        token,
+        token: encryptedToken,
         profile: username,
         ...(picture ? { picture } : {}),
         inBetweenSteps: isBetweenSteps,
-        refreshToken,
+        refreshToken: encryptedRefreshToken,
         ...(expiresIn
           ? { tokenExpiration: new Date(Date.now() + expiresIn * 1000) }
           : {}),
@@ -283,8 +319,8 @@ export class IntegrationRepository {
         ...(picture ? { picture } : {}),
         profile: username,
         providerIdentifier: provider,
-        token,
-        refreshToken,
+        token: encryptedToken,
+        refreshToken: encryptedRefreshToken,
         ...(expiresIn
           ? { tokenExpiration: new Date(Date.now() + expiresIn * 1000) }
           : {}),
@@ -314,8 +350,8 @@ export class IntegrationRepository {
           rootInternalId: rootId,
         },
         data: {
-          token,
-          refreshToken,
+          token: encryptedToken,
+          refreshToken: encryptedRefreshToken,
           refreshNeeded: false,
           ...(expiresIn
             ? { tokenExpiration: new Date(Date.now() + expiresIn * 1000) }
@@ -327,8 +363,8 @@ export class IntegrationRepository {
     return upsert;
   }
 
-  needsToBeRefreshed() {
-    return this._integration.model.integration.findMany({
+  async needsToBeRefreshed() {
+    const rows = await this._integration.model.integration.findMany({
       where: {
         tokenExpiration: {
           lte: dayjs().add(1, 'day').toDate(),
@@ -338,6 +374,8 @@ export class IntegrationRepository {
         refreshNeeded: false,
       },
     });
+
+    return rows.map((row) => this.decryptTokenFields(row));
   }
 
   async setBetweenRefreshSteps(id: string) {
@@ -374,13 +412,15 @@ export class IntegrationRepository {
     });
   }
 
-  getIntegrationById(org: string, id: string) {
-    return this._integration.model.integration.findFirst({
+  async getIntegrationById(org: string, id: string) {
+    const row = await this._integration.model.integration.findFirst({
       where: {
         organizationId: org,
         id,
       },
     });
+
+    return row ? this.decryptTokenFields(row) : row;
   }
 
   async getIntegrationForOrder(
@@ -483,8 +523,8 @@ export class IntegrationRepository {
     });
   }
 
-  getIntegrationsList(org: string) {
-    return this._integration.model.integration.findMany({
+  async getIntegrationsList(org: string) {
+    const rows = await this._integration.model.integration.findMany({
       where: {
         organizationId: org,
         deletedAt: null,
@@ -493,6 +533,8 @@ export class IntegrationRepository {
         customer: true,
       },
     });
+
+    return rows.map((row) => this.decryptTokenFields(row));
   }
 
   async disableChannel(org: string, id: string) {
