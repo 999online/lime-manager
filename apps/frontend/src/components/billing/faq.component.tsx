@@ -33,9 +33,9 @@ const useFaqList = () => {
         'faq_postiz_gitroom_is_proudly_open_source',
         `${
           isGeneral ? 'Lime Manager' : 'Lime Manager'
-        } is proudly open-source! We believe in an ethical and transparent culture, meaning that ${
+        } is an internal tool built and maintained by the LegalMatch team. We believe in an ethical and transparent culture, and ${
           isGeneral ? 'Lime Manager' : 'Lime Manager'
-        } will live forever. You can check out the entire code or use it for personal projects. To view the open-source repository, <a href="https://github.com/gitroomhq/postiz-app" target="_blank" style="text-decoration: underline;">click here</a>.`
+        } is developed and supported in-house to power our social media scheduling.`
       ),
     },
     {
