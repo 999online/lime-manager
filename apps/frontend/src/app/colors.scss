@@ -20,7 +20,7 @@
     --new-table-border: #2b2b2b;
     --new-table-header: #1e1d1d;
     --new-table-text: #9c9c9c;
-    --new-table-text-focused: #fc69ff;
+    --new-table-text-focused: #84cc16;
     --new-small-strips: #191818;
     --new-big-strips: #161515;
     --new-col-color: #2c2b2b;
@@ -42,16 +42,16 @@
     --youtube-svg-border: #A0A0A0;
   }
   .light {
-    --new-back-drop: #2d1b57;
+    --new-back-drop: #1e293b;
     --new-settings: #eceef1;
     --new-sep: #d5d9dd;
     --new-border: #eaecee;
     --new-bgColor: #f0f2f4;
     --new-bgColorInner: #ffffff;
     --new-bgLineColor: #e7e9eb;
-    --new-textItemFocused: #3900b2;
+    --new-textItemFocused: #4d7c0f;
     --new-textItemBlur: #777b7f;
-    --new-boxFocused: #ebe8ff;
+    --new-boxFocused: #ecfccb;
     --new-textColor: 14 14 14;
     --new-blockSeparator: #f2f2f4;
     --new-btn-simple: #eceef1;
@@ -62,23 +62,23 @@
     --new-table-border: #e7e9eb;
     --new-table-header: #f5f7f9;
     --new-table-text: #777b7f;
-    --new-table-text-focused: #fc69ff;
+    --new-table-text-focused: #4d7c0f;
     --new-small-strips: #191818;
     --new-big-strips: #f5f7f9;
     --new-col-color: #eff1f3;
     --new-menu-dots: #696868;
     --new-menu-hover: #000;
-    --menu-shadow: -22px 83px 24px 0 rgba(55, 52, 75, 0),
-      -14px 53px 22px 0 rgba(55, 52, 75, 0.01),
-      -8px 30px 19px 0 rgba(55, 52, 75, 0.05),
-      -3px 13px 14px 0 rgba(55, 52, 75, 0.09),
-      -1px 3px 8px 0 rgba(55, 52, 75, 0.1);
-    --popup-color: rgba(55, 37, 97, 0.2);
+    --menu-shadow: -22px 83px 24px 0 rgba(15, 23, 42, 0),
+      -14px 53px 22px 0 rgba(15, 23, 42, 0.01),
+      -8px 30px 19px 0 rgba(15, 23, 42, 0.05),
+      -3px 13px 14px 0 rgba(15, 23, 42, 0.09),
+      -1px 3px 8px 0 rgba(15, 23, 42, 0.1);
+    --popup-color: rgba(30, 41, 59, 0.2);
     --border-preview: #f1f0f3;
-    --preview-box-shadow: 0 386px 108px 0 rgba(38, 32, 64, 0),
-      0 247px 99px 0 rgba(38, 32, 64, 0.01),
-      0 139px 83px 0 rgba(38, 32, 64, 0.03),
-      0 62px 62px 0 rgba(38, 32, 64, 0.04), 0 15px 34px 0 rgba(38, 32, 64, 0.05);
+    --preview-box-shadow: 0 386px 108px 0 rgba(15, 23, 42, 0),
+      0 247px 99px 0 rgba(15, 23, 42, 0.01),
+      0 139px 83px 0 rgba(15, 23, 42, 0.03),
+      0 62px 62px 0 rgba(15, 23, 42, 0.04), 0 15px 34px 0 rgba(15, 23, 42, 0.05);
     --linkedin-border: #e9e5df;
     --linkedin-bg: #fff;
     --linkedin-text: #707070;
