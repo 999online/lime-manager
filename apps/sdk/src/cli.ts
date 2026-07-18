@@ -4,7 +4,7 @@ import os from 'os';
 import path from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import LimeManager from './index';
+import LimeManager, { LimeManagerApiError } from './index';
 
 const CONFIG_DIR = path.join(os.homedir(), '.lime-manager');
 const CONFIG_PATH = path.join(CONFIG_DIR, 'config.json');
@@ -126,5 +126,17 @@ yargs(hideBin(process.argv))
   )
   .demandCommand(1)
   .strict()
+  .fail((msg, err) => {
+    // Reached whenever a command handler's promise rejects (yargs awaits
+    // async handlers and routes rejections here) — without this, an API
+    // error just resolved silently and the process exited 0, indistinguishable
+    // from success to anything scripting against this CLI.
+    if (err instanceof LimeManagerApiError) {
+      console.error(`API error (${err.status}):`, JSON.stringify(err.body));
+    } else {
+      console.error(msg || (err as Error)?.message || 'Unknown error');
+    }
+    process.exit(1);
+  })
   .help()
   .parse();

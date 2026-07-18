@@ -12,6 +12,28 @@ function toQueryString(obj: Record<string, any>): string {
   return params.toString();
 }
 
+export class LimeManagerApiError extends Error {
+  constructor(public status: number, public body: unknown) {
+    super(
+      `Lime Manager API request failed with status ${status}: ${JSON.stringify(body)}`
+    );
+    this.name = 'LimeManagerApiError';
+  }
+}
+
+// node-fetch resolves on any HTTP status, including 4xx/5xx — none of these
+// calls checked response.ok, so an API-level rejection (bad request, auth
+// failure, validation error) silently returned the error body as if it were
+// a successful result. Any caller scripting against this SDK/CLI would see
+// a normal resolved promise / exit code 0 even when the request failed.
+async function parseOrThrow(response: import('node-fetch').Response) {
+  const body = await response.json().catch(() => undefined);
+  if (!response.ok) {
+    throw new LimeManagerApiError(response.status, body);
+  }
+  return body;
+}
+
 export default class LimeManager {
   constructor(
     private _apiKey: string,
@@ -19,7 +41,7 @@ export default class LimeManager {
   ) {}
 
   async post(posts: CreatePostDto) {
-    return (
+    return parseOrThrow(
       await fetch(`${this._path}/public/v1/posts`, {
         method: 'POST',
         headers: {
@@ -28,11 +50,11 @@ export default class LimeManager {
         },
         body: JSON.stringify(posts),
       })
-    ).json();
+    );
   }
 
   async postList(filters: GetPostsDto) {
-    return (
+    return parseOrThrow(
       await fetch(`${this._path}/public/v1/posts?${toQueryString(filters)}`, {
         method: 'GET',
         headers: {
@@ -40,7 +62,7 @@ export default class LimeManager {
           Authorization: this._apiKey,
         },
       })
-    ).json();
+    );
   }
 
   async upload(file: Buffer, extension: string) {
@@ -59,7 +81,7 @@ export default class LimeManager {
     const blob = new Blob([file], { type });
     formData.append('file', blob, extension);
 
-    return (
+    return parseOrThrow(
       await fetch(`${this._path}/public/v1/upload`, {
         method: 'POST',
         // @ts-ignore
@@ -68,11 +90,11 @@ export default class LimeManager {
           Authorization: this._apiKey,
         },
       })
-    ).json();
+    );
   }
 
   async integrations() {
-    return (
+    return parseOrThrow(
       await fetch(`${this._path}/public/v1/integrations`, {
         method: 'GET',
         headers: {
@@ -80,16 +102,18 @@ export default class LimeManager {
           Authorization: this._apiKey,
         },
       })
-    ).json();
+    );
   }
 
-  deletePost(id: string) {
-    return fetch(`${this._path}/public/v1/posts/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: this._apiKey,
-      },
-    });
+  async deletePost(id: string) {
+    return parseOrThrow(
+      await fetch(`${this._path}/public/v1/posts/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: this._apiKey,
+        },
+      })
+    );
   }
 }
