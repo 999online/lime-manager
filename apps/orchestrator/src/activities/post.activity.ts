@@ -23,6 +23,8 @@ import {
   postId as postIdSearchParam,
 } from '@gitroom/nestjs-libraries/temporal/temporal.search.attribute';
 import { SubscriptionService } from '@gitroom/nestjs-libraries/database/prisma/subscriptions/subscription.service';
+import { isSafePublicHttpsUrl } from '@gitroom/nestjs-libraries/dtos/webhooks/webhook.url.validator';
+import { getSsrfSafeDispatcher } from '@gitroom/nestjs-libraries/dtos/webhooks/ssrf.safe.dispatcher';
 
 // Drops fields the workflow and downstream activities never read — biggest wins are `error` (grows per retry) and `childrenPost` (Prisma side-loads it on every recursive row).
 function slimPost(post: any) {
@@ -326,12 +328,24 @@ export class PostActivity {
     await Promise.all(
       webhooks.map(async (webhook) => {
         try {
+          // Re-validate at delivery time, not just at registration time: a
+          // hostname that resolved to a public IP when the webhook was
+          // created can be repointed at an internal address by delivery
+          // time (DNS rebinding) — the DTO-level check alone leaves that
+          // TOCTOU window open. redirect:'manual' + no Location-following
+          // also closes the open-redirect variant of the same bypass.
+          if (!(await isSafePublicHttpsUrl(webhook.url))) {
+            return;
+          }
           await fetch(webhook.url, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(post),
+            redirect: 'manual',
+            // @ts-ignore — undici-specific option, not in lib.dom fetch types
+            dispatcher: getSsrfSafeDispatcher(),
           });
         } catch (e) {
           /**empty**/
