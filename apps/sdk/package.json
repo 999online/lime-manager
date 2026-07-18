@@ -1,23 +1,26 @@
 {
-  "name": "@postiz/node",
-  "version": "1.0.8",
-  "description": "The ultimate social media scheduling tool",
+  "name": "@lime-manager/sdk",
+  "version": "1.0.0",
+  "description": "Node SDK for Lime Manager's public API (internal use)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "lime-manager": "dist/cli.js"
+  },
   "scripts": {
-    "publish": "tsup && pnpm publish --access public"
+    "build": "tsup"
   },
   "files": [
     "dist"
   ],
   "keywords": [
     "social media",
-    "scheduling tool",
-    "social media scheduling tool"
+    "scheduling tool"
   ],
-  "author": "Nevo David",
+  "private": true,
   "license": "AGPL-3.0",
   "dependencies": {
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "yargs": "^17.7.2"
   }
 }

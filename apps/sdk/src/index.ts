@@ -12,10 +12,10 @@ function toQueryString(obj: Record<string, any>): string {
   return params.toString();
 }
 
-export default class Lime Manager {
+export default class LimeManager {
   constructor(
     private _apiKey: string,
-    private _path = 'https://api.postiz.com'
+    private _path = process.env.LIME_MANAGER_API_URL || 'http://localhost:3000'
   ) {}
 
   async post(posts: CreatePostDto) {
