@@ -93,6 +93,37 @@ yargs(hideBin(process.argv))
       console.log(`Deleted post ${argv.id}`);
     }
   )
+  .command(
+    'create-post',
+    'Create/schedule a post from a JSON payload matching the public API\'s CreatePostDto shape (see apps/sdk/README.md for an example)',
+    (y) =>
+      y
+        .option('file', { type: 'string', describe: 'path to a JSON file with the post payload' })
+        .option('json', { type: 'string', describe: 'inline JSON string with the post payload' })
+        .check((argv) => {
+          if (!argv.file && !argv.json) {
+            throw new Error('Provide either --file <path> or --json <string>');
+          }
+          if (argv.file && argv.json) {
+            throw new Error('Provide only one of --file or --json, not both');
+          }
+          return true;
+        }),
+    async (argv) => {
+      const raw = argv.file
+        ? fs.readFileSync(argv.file as string, 'utf8')
+        : (argv.json as string);
+      let payload: any;
+      try {
+        payload = JSON.parse(raw);
+      } catch (e) {
+        console.error('Invalid JSON payload:', (e as Error).message);
+        process.exit(1);
+      }
+      const result = await getClient().post(payload);
+      console.log(JSON.stringify(result, null, 2));
+    }
+  )
   .demandCommand(1)
   .strict()
   .help()
